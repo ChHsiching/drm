@@ -5,6 +5,7 @@ import path from "path";
 
 // Path to the Docker daemon configuration file
 const DAEMON_JSON_PATH = '/etc/docker/daemon.json';
+const DAEMON_DIR_PATH = path.dirname(DAEMON_JSON_PATH);
 
 /**
  * Reads the current Docker configuration.
@@ -29,10 +30,23 @@ export async function getDockerConfig() {
 }
 
 /**
+ * Creates the directory for Docker configuration if it doesn't exist.
+ */
+async function ensureConfigDirectory() {
+  try {
+    await fs.mkdir(DAEMON_DIR_PATH, { recursive: true });
+    console.log(`Directory ${DAEMON_DIR_PATH} ensured.`);
+  } catch (error) {
+    console.error('Error creating Docker configuration directory:', error);
+  }
+}
+
+/**
  * Creates a default Docker configuration file if it doesn't exist.
  */
 async function createDefaultConfig() {
   try {
+    await ensureConfigDirectory();
     const defaultConfig = {};
     await fs.writeFile(DAEMON_JSON_PATH, JSON.stringify(defaultConfig, null, 2), 'utf-8');
     console.log(`Default Docker configuration file created at ${DAEMON_JSON_PATH}`);
