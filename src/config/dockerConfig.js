@@ -46,17 +46,28 @@ async function createDefaultConfig() {
  *
  * @param {string} mirrorUrl - The URL of the Docker mirror to set.
  */
-export function setDockerMirror(mirrorUrl) {
-  // Get the current Docker configuration
-  const config = getDockerConfig();
-  // Update the 'registry-mirrors' field with the new mirror URL
-  config['registry-mirrors'] = [mirrorUrl];
-  // Write the updated configuration back to the file
-  // stringify() :
-  // 1. config : converts the JS object "config" into a formatted JSON string.
-  // 2. null : not using a replacement function or array
-  // 3. 2 : using two spaces for indentation
-  fs.writeFileSync(DAEMON_JSON_PATH, JSON.stringify(config, null, 2), 'utf-8');
-  console.log(`Docker mirror set to ${mirrorUrl}. Please restart Docker to apply changes.`);
+export async function setDockerMirror(mirrorUrl) {
+  try {
+    let config = await getDockerConfig();
+
+    // If the configuration file does not exist, create a default one
+    if (Object.keys(config).length === 0) {
+      await createDefaultConfig();
+      config = await getDockerConfig(); // Re-read the config after creation
+    }
+  
+
+    // Update the 'registry-mirrors' field with the new mirror URL
+    config['registry-mirrors'] = [mirrorUrl];
+    // Write the updated configuration back to the file
+    // stringify() :
+    // 1. config : converts the JS object "config" into a formatted JSON string.
+    // 2. null : not using a replacement function or array
+    // 3. 2 : using two spaces for indentation
+    await fs.writeFile(DAEMON_JSON_PATH, JSON.stringify(config, null, 2), 'utf-8');
+    console.log(`Docker mirror set to ${mirrorUrl}. Please restart Docker to apply changes.`);
+  } catch (error) {
+    console.error('Error setting Docker mirror:', error);
+  }
 }
 
