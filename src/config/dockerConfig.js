@@ -33,22 +33,22 @@ async function runWithSudo(command) {
  *
  * @returns {object} - The current Docker configuration.
  */
-export async function getDockerConfig() {
-  try {
-    // Check if the configuration file exists
-    await fs.access(DAEMON_JSON_PATH);
-    // Read and parse the existing Docker configuration file
-    return JSON.parse(await fs.readFile(DAEMON_JSON_PATH, 'utf-8'));
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      // If the file does not exist, return an empty object
-      return {}
-    }
-  }
-  // For other errors, log them and return an empty object
-  console.error('Error reading Docker configuration:', error);
-  return {};
-}
+// export async function getDockerConfig() {
+//  try {
+//    // Check if the configuration file exists
+//    await fs.access(DAEMON_JSON_PATH);
+//    // Read and parse the existing Docker configuration file
+//    return JSON.parse(await fs.readFile(DAEMON_JSON_PATH, 'utf-8'));
+//  } catch (error) {
+//    if (error.code === 'ENOENT') {
+//      // If the file does not exist, return an empty object
+//      return {}
+//    }
+//  }
+//  // For other errors, log them and return an empty object
+//  console.error('Error reading Docker configuration:', error);
+//  return {};
+//}
 
 /**
  * Creates the directory for Docker configuration if it doesn't exist.
@@ -83,26 +83,35 @@ async function createDefaultConfig() {
  *
  * @param {string} mirrorUrl - The URL of the Docker mirror to set.
  */
+//export async function setDockerMirror(mirrorUrl) {
+//  try {
+//    let config = await getDockerConfig();
+//
+//    // If the configuration file does not exist, create a default one
+//    if (Object.keys(config).length === 0) {
+//      await createDefaultConfig();
+//      config = await getDockerConfig(); // Re-read the config after creation
+//    }
+//
+//    // Update the 'registry-mirrors' field with the new mirror URL
+//    config['registry-mirrors'] = [mirrorUrl];
+//    // Write the updated configuration back to the file
+//    // stringify() :
+//    // 1. config : converts the JS object "config" into a formatted JSON string.
+//    // 2. null : not using a replacement function or array
+//    // 3. 2 : using two spaces for indentation
+//    await runWithSudo(`bash -c 'echo "${JSON.stringify(config, null, 2)}" > ${DAEMON_JSON_PATH}'`);
+//    // await fs.writeFile(DAEMON_JSON_PATH, JSON.stringify(config, null, 2), 'utf-8');
+//    console.log(`Docker mirror set to ${mirrorUrl}. Please restart Docker to apply changes.`);
+//  } catch (error) {
+//    console.error('Error setting Docker mirror:', error);
+//  }
+//}
 export async function setDockerMirror(mirrorUrl) {
   try {
-    let config = await getDockerConfig();
-
-    // If the configuration file does not exist, create a default one
-    if (Object.keys(config).length === 0) {
-      await createDefaultConfig();
-      config = await getDockerConfig(); // Re-read the config after creation
-    }
-
-    // Update the 'registry-mirrors' field with the new mirror URL
-    config['registry-mirrors'] = [mirrorUrl];
-    // Write the updated configuration back to the file
-    // stringify() :
-    // 1. config : converts the JS object "config" into a formatted JSON string.
-    // 2. null : not using a replacement function or array
-    // 3. 2 : using two spaces for indentation
+    await createDefaultConfig();
+    const config = { 'registry-mirrors': [mirrorUrl] };
     await runWithSudo(`bash -c 'echo "${JSON.stringify(config, null, 2)}" > ${DAEMON_JSON_PATH}'`);
-    // await fs.writeFile(DAEMON_JSON_PATH, JSON.stringify(config, null, 2), 'utf-8');
-    console.log(`Docker mirror set to ${mirrorUrl}. Please restart Docker to apply changes.`);
   } catch (error) {
     console.error('Error setting Docker mirror:', error);
   }
