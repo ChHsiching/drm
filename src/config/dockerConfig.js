@@ -1,7 +1,7 @@
 // fs - file system methods
-import { fs } from "fs";
+import { promises as fs } from "fs";
 // path - utilities for working with file and directory paths
-import { path } from "path";
+import path from "path";
 
 // Path to the Docker daemon configuration file
 const DAEMON_JSON_PATH = '/etc/docker/daemon.json';

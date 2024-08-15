@@ -14,7 +14,9 @@
     "drm": "./bin/drm.js"
   },
   "dependencies": {
+    "axios": "^1.7.4",
     "chalk": "^5.3.0",
-    "commander": "^12.1.0"
+    "commander": "^12.1.0",
+    "fs": "0.0.1-security"
   }
 }

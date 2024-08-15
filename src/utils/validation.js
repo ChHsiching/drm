@@ -1,4 +1,4 @@
-import { axios } from "axios";
+import axios from "axios";
 
 /**
  * Validates if the Docker mirror URL is reachable.
