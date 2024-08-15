@@ -29,6 +29,19 @@ export async function getDockerConfig() {
 }
 
 /**
+ * Creates a default Docker configuration file if it doesn't exist.
+ */
+async function createDefaultConfig() {
+  try {
+    const defaultConfig = {};
+    await fs.writeFile(DAEMON_JSON_PATH, JSON.stringify(defaultConfig, null, 2), 'utf-8');
+    console.log(`Default Docker configuration file created at ${DAEMON_JSON_PATH}`);
+  } catch (error) {
+    console.error('Error creating Docker configuration file:', error);
+  }
+}
+
+/**
  * Sets the Docker mirror URL in the configuration file.
  *
  * @param {string} mirrorUrl - The URL of the Docker mirror to set.
