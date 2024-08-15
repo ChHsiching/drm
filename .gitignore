@@ -1,0 +1,37 @@
+# Node.js dependencies
+node_modules/
+
+# pnpm lock file
+pnpm-lock.yaml
+
+# npm logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE and editor directories
+.vscode/
+.idea/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Build output
+dist/
+build/
+
+# Environment variables
+.env
+.env.*.local
+
+# Testing coverage
+coverage/
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# Git
+.git/
