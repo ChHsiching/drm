@@ -11,12 +11,20 @@ const DAEMON_JSON_PATH = '/etc/docker/daemon.json';
  *
  * @returns {object} - The current Docker configuration.
  */
-export function getDockerConfig() {
-  if (fs.existsSync(DAEMON_JSON_PATH)) {
+export async function getDockerConfig() {
+  try {
+    // Check if the configuration file exists
+    await fs.access(DAEMON_JSON_PATH);
     // Read and parse the existing Docker configuration file
-    return JSON.parse(fs.readFileSync(DAEMON_JSON_PATH, 'utf-8'));
+    return JSON.parse(await fs.readFile(DAEMON_JSON_PATH, 'utf-8'));
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      // If the file does not exist, return an empty object
+      return {}
+    }
   }
-  // Return an empty object if the file does not exist
+  // For other errors, log them and return an empty object
+  console.error('Error reading Docker configuration:', error);
   return {};
 }
 
