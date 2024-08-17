@@ -111,7 +111,9 @@ export async function setDockerMirror(mirrorUrl) {
   try {
     await createDefaultConfig();
     const config = { 'registry-mirrors': [mirrorUrl] };
-    await runWithSudo(`bash -c 'echo "${JSON.stringify(config, null, 2)}" > ${DAEMON_JSON_PATH}'`);
+    const jsonString = JSON.stringify(config, null, 2);
+    const command = `printf '%s' '${jsonString.replace(/'/g, "'\\''")}' > ${DAEMON_JSON_PATH}`;
+    await runWithSudo(command);
   } catch (error) {
     console.error('Error setting Docker mirror:', error);
   }
