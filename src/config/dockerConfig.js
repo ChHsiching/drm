@@ -12,6 +12,7 @@ const execPromise = promisify(exec);
 
 // Path to the Docker daemon configuration file
 const DAEMON_JSON_PATH = '/etc/docker/daemon.json';
+const TEMP_JSON_PATH = '/tmp/daemon.json.tmp';
 const DAEMON_DIR_PATH = path.dirname(DAEMON_JSON_PATH);
 
 /**
@@ -112,8 +113,11 @@ export async function setDockerMirror(mirrorUrl) {
     await createDefaultConfig();
     const config = { 'registry-mirrors': [mirrorUrl] };
     const jsonString = JSON.stringify(config, null, 2);
-    const command = `printf '%s' '${jsonString.replace(/'/g, "'\\''")}' > ${DAEMON_JSON_PATH}`;
+    await fs.writeFile(TEMP_JSON_PATH, jsonString, 'utf-8');
+    // const command = `printf '%s' '${jsonString.replace(/'/g, "'\\''")}' > ${DAEMON_JSON_PATH}`;
+    const command = `sudo mv ${TEMP_JSON_PATH} ${DAEMON_JSON_PATH}`;
     await runWithSudo(command);
+    console.log(`Docker mirror set to ${mirrorUrl}. Please restart Docker to apply changes.`);  
   } catch (error) {
     console.error('Error setting Docker mirror:', error);
   }
