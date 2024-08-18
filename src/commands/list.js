@@ -51,15 +51,21 @@ function showSpinner(interval = 100) {
 export async function listCommand() {
   console.log('Available Docker mirror sources:');
 
-  for (const [name, url] of Object.entries(sources)) {
-    const clearSpinner = showSpinner();
-    
-    const available = await isSourceAvailable(url);
+  const sourceEntries = Object.entries(sources);
+  const maxNameLength = Math.max(...sourceEntries.map(([name]) => name.length));
 
+  for (const [name, url] of sourceEntries) {
+    // Show spiner animation
+    const clearSpinner = showSpinner();
+    // Check if source is available
+    const available = await isSourceAvailable(url);
+    // Clear spinner animation
     clearSpinner();
     
     const status = available ? 'Available' : 'Unavailable';
     const color = available ? chalk.green : chalk.red;
-    console.log(`- ${color(name)}: ${chalk.blue(url)} (${status})`);
+    
+    // console.log(`- ${color(name)}: ${chalk.blue(url)} (${status})`);
+    console.log(`- ${color(name.padEnd(maxNameLength))}: ${chalk.blue(url)} (${status})`);
   }
 }
