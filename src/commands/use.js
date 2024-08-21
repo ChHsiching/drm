@@ -1,6 +1,7 @@
 import { setDockerMirror } from "../config/dockerConfig.js";
 import { sources } from "../sources/sourceList.js";
 import { validateSource } from "../utils/validation.js";
+import chalk from 'chalk';
 
 /**
  * Handler for the 'use' command.
@@ -23,6 +24,6 @@ export async function useCommand(sourceName) {
     // Update the Docker configuration with the new mirror URL
     setDockerMirror(mirrorUrl);
   } else {
-    console.error(`Source ${mirrorUrl} is not reachable.`);
+    console.error(chalk.red(`Source ${mirrorUrl} is not reachable.`));
   }
 }

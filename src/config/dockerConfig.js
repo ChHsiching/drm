@@ -6,6 +6,7 @@ import { promisify } from 'util';
 import { promises as fs } from "fs";
 // path - utilities for working with file and directory paths
 import path from "path";
+import chalk from 'chalk';
 
 // Convert exec to return a promise
 const execPromise = promisify(exec);
@@ -117,7 +118,12 @@ export async function setDockerMirror(mirrorUrl) {
     // const command = `printf '%s' '${jsonString.replace(/'/g, "'\\''")}' > ${DAEMON_JSON_PATH}`;
     const command = `sudo mv ${TEMP_JSON_PATH} ${DAEMON_JSON_PATH}`;
     await runWithSudo(command);
-    console.log(`Docker mirror set to ${mirrorUrl}. Please restart Docker to apply changes.`);  
+    // console.log(`Docker mirror set to ${mirrorUrl}. Please restart Docker to apply changes.`);  
+    console.log(chalk.green(`Docker mirror set to ${chalk.cyan(mirrorUrl)}.`));
+    console.log('\nTo apply the changes, you need to restart the Docker daemon. Use the following command to restart Docker:\n');
+    console.log(chalk.blue(' $ sudo systemctl restart docker\n'));
+    console.log(chalk.gray('If you are using a different init system or platform, use the appropriate command to restart Docker.'));
+    console.log(chalk.yellow('Please note that restarting Docker will affect running containers. Ensure that you have saved all necessary work before restarting.'));
   } catch (error) {
     console.error('Error setting Docker mirror:', error);
   }

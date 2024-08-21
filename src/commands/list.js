@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from 'path';
 import axios from 'axios';
 import chalk from 'chalk';
 import { sources } from "../sources/sourceList.js";
@@ -46,6 +48,22 @@ function showSpinner(interval = 100) {
 // }
 
 /**
+ * Reads Docker's daemon.json file and returns the list of registry mirrors.
+ * @returns {string[]} - An array of registry mirror URLs.
+ */
+function getConfiguredMirrors() {
+  const daemonJsonPath = path.resolve('/etc/docker/daemon.json');
+
+  if (!fs.existsSync(daemonJsonPath)) {
+    return [];
+  }
+
+  const fileContent = fs.readFileSync(daemonJsonPath, 'utf-8');
+  const config = JSON.parse(fileContent);
+  return config['registry-mirrors'] || [];
+}
+
+/**
  * Handler for the 'list' command.
  */
 export async function listCommand() {
@@ -53,6 +71,8 @@ export async function listCommand() {
 
   const sourceEntries = Object.entries(sources);
   const maxNameLength = Math.max(...sourceEntries.map(([name]) => name.length));
+
+  const configuredMirrors = getConfiguredMirrors();
 
   for (const [name, url] of sourceEntries) {
     // Show spiner animation
@@ -63,9 +83,15 @@ export async function listCommand() {
     clearSpinner();
     
     const status = available ? 'Available' : 'Unavailable';
-    const color = available ? chalk.green : chalk.red;
-    
+    const isCurrentSource = configuredMirrors.includes(url);
+    const nameColor = isCurrentSource ? chalk.cyan.bold : (available ? chalk.green : chalk.red);
+    // const color = available ? chalk.green : chalk.red;
+    const arrow = isCurrentSource ? chalk.cyan.bold('->  ') : '    ';
+
     // console.log(`- ${color(name)}: ${chalk.blue(url)} (${status})`);
-    console.log(`- ${color(name.padEnd(maxNameLength))}: ${chalk.blue(url)} (${status})`);
+    // console.log(`- ${color(name.padEnd(maxNameLength))}: ${chalk.blue(url)} (${status})`);
+    
+    // Print each source with its availability status
+    console.log(`${arrow}${nameColor(name.padEnd(maxNameLength))}: ${chalk.blue(url)} (${status})`);
   }
 }
