@@ -49,3 +49,9 @@ else
   echo "Installing pnpm version $PNPM_RECOMMENDED_VERSION..."
   npm install -g "pnpm@$PNPM_RECOMMENDED_VERSION"
 fi
+
+# Execute pnpm install to install project dependencies
+echo "Installing project dependencies using pnpm..."
+pnpm install
+
+echo "Setup completed successfully."
