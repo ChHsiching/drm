@@ -3,6 +3,7 @@
 # Define the recommended Node.js and pnpm versions
 NODE_RECOMMENDED_VERSION="18.20.4"
 PNPM_RECOMMENDED_VERSION="9.7.1"
+PACKAGE_NAME="drm"
 
 # Function to compare version numbers
 version_gte() {
@@ -53,5 +54,10 @@ fi
 # Execute pnpm install to install project dependencies
 echo "Installing project dependencies using pnpm..."
 pnpm install
+
+# Link the pacakge globally
+echo "Linking the package globally..."
+npm link
+npm link drm
 
 echo "Setup completed successfully."
