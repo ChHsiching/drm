@@ -4,15 +4,24 @@
   "description": "Docker Registry Manager",
   "main": "index.js",
   "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "bin": {
     "drm": "./bin/drm.js"
   },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "docker",
+    "registry",
+    "docker-registry",
+    "manager",
+    "docker-manager",
+    "container",
+    "container-registry",
+    "cli"
+  ],
+  "author": "ChHsiching",
+  "license": "MIT",
   "dependencies": {
     "axios": "^1.7.4",
     "chalk": "^5.3.0",
