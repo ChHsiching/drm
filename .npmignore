@@ -1,0 +1,23 @@
+# Ignore node_modules directory (not needed in the package)
+node_modules/
+
+# Ignore .git directory (version control information)
+.git/
+
+# Ignore documentation files
+docs/
+
+# Ignore lock files
+pnpm-lock.yaml
+
+# Ignore setup script
+setup.sh
+
+# Ignore local environment configuration files
+.env
+
+# Ignore log files
+*.log
+
+# Ignore build artifacts if any (you can uncomment this if applicable)
+# build/
