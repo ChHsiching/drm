@@ -4,6 +4,8 @@
 NODE_RECOMMENDED_VERSION="18.20.4"
 PNPM_RECOMMENDED_VERSION="9.7.1"
 PACKAGE_NAME="drm"
+DAEMON_JSON="/etc/docker/daemon.json"
+BACKUP_SUFFIX=".bak"
 
 # Function to compare version numbers
 version_gte() {
@@ -38,7 +40,7 @@ if command -v pnpm &>/dev/null; then
   echo "Detected pnpm version: $PNPM_VERSION"
 
   # Check if pnpm version meets the recommended version
-  if version_gte "PNPM_VERSION" "$PNPM_RECOMMENDED_VERSION"; then
+  if version_gte "$PNPM_VERSION" "$PNPM_RECOMMENDED_VERSION"; then
     echo "pnpm version meets the recommended requirements."
   else
     echo "installed version of pnpm is $PNPM_VERSION. Recommended version is $PNPM_RECOMMENDED_VERSION."
@@ -51,6 +53,15 @@ else
   npm install -g "pnpm@$PNPM_RECOMMENDED_VERSION"
 fi
 
+# Backup daemon.json if it exists
+if [ -f "$DAEMON_JSON" ]; then
+  BACKUP_FILE="${DAEMON_JSON}${BACKUP_SUFFIX}"
+  echo "Backing up $DAEMON_JSON to $BACKUP_FILE..."
+  cp "$DAEMON_JSON" "$BACKUP_FILE"
+  echo "Backup created: $BACKUP_FILE"
+else
+  echo "$DAEMON_JSON does not exist. No backup required."
+
 # Execute pnpm install to install project dependencies
 echo "Installing project dependencies using pnpm..."
 pnpm install
@@ -58,6 +69,6 @@ pnpm install
 # Link the pacakge globally
 echo "Linking the package globally..."
 npm link
-npm link drm
+npm link "$PACKAGE_NAME"
 
 echo "Setup completed successfully."
